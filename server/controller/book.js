@@ -16,14 +16,18 @@ module.exports.displayBookList = (req,res,next)=>{
             //console.log(booklist);
            res.render('book/list',{
                 title:'Books', 
-                Booklist: booklist
+                Booklist: booklist,
+                displayName: req.user ? req.user.displayName:''  
             }) 
         }
     });
 }
 
 module.exports.displayAddPage = (req,res,next)=> {
-    res.render('book/add',{title:'Add Book'})
+    res.render('book/add',{
+        title:'Add Book',
+        displayName: req.user ? req.user.displayName:''  
+    })
 }
 
 module.exports.processAddPage = (req,res,next)=> {
@@ -58,7 +62,9 @@ module.exports.processAddPage = (req,res,next)=> {
         }
         else
         {
-            res.render('book/edit',{title:'Edit Book', book:bookToEdit});
+            res.render('book/edit',{title:'Edit Book', 
+            book:bookToEdit,
+            displayName: req.user ? req.user.displayName:''  });
         }
     });
 }
