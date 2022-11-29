@@ -1,6 +1,7 @@
 let express = require('express');
 let router = express.Router();
 let indexController = require('../controller/index');
+let jwt = require('jsonwebtoken');
 /* GET home page. */
 router.get('/', indexController.displayHomePage);
 

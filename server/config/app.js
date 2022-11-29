@@ -6,9 +6,12 @@ let cookieParser = require('cookie-parser');
 let logger = require('morgan');
 let session = require('express-session');
 let passport = require('passport');
+
 let passportJWT = require('passport-jwt');
-let JWTStrategy = passportLocal.Strategy;
+let JWTStrategy = passportJWT.Strategy;
 let ExtractJWT = passportJWT.ExtractJwt;
+
+
 let passportLocal = require('passport-local');
 let localStrategy = passportLocal.Strategy;
 let flash = require('connect-flash');
@@ -75,16 +78,15 @@ app.use(express.static(path.join(__dirname, '../../node_modules')));
 let jwtoptions = {};
 jwtoptions.jwtFromRequest = ExtractJWT.fromAuthHeaderAsBearerToken();
 jwtoptions.secretOrKey = DB.secret;
-let Strategy = new JWTStrategy(jwtoptions,(jwt_payload,done)=>{
-  User.findById(jwt_payload.id)
-  .then(User =>{
-    return done(null, User);
-  })
-  .catch(err =>{
-    return done(err,false);
-  })
-})
-passport.use(Strategy);
+// let Strategy = new JWTStrategy(jwtoptions,(jwt_payload,done)=>{
+//   User.findById(jwt_payload.id)
+//   .then(user =>{
+//     return done(null, user);
+//   })
+//   .catch(err =>{
+//     return done(err,false);
+//   }) })
+
 
 app.use('/', indexRouter); // localhost:3000
 app.use('/users', usersRouter); // localhost:3000/users
@@ -109,5 +111,12 @@ app.use(function(err, req, res, next) {
   }
   );
 });
+let Strategy = new JWTStrategy(jwtoptions,(jwt_payload,done)=>{
+  User.findById(jwt_payload.id, (err, user) => {
+   if (err) return done(err, false);
+   return done(null, user);
+  });
+});
 
+passport.use(Strategy);
 module.exports = app;
